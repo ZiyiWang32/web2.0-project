@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+    body{ text-align:center} 
+    #divcss5{margin:0 auto;border:1px solid #000;width:300px;height:100px} 
+</style>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static '/css/navigation.css' %}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script type="text/javascript">
+    function userCheck() {
+        var text = document.getElementById("uname").value;
+        if (text.length > 10 || text.length < 3) {
+            document.getElementById("username").style.display = "";
+        }
+        else {
+            document.getElementById("username").style.display = "None";
+        }
+    }
+
+    function pwdCheck() {
+        var text = document.getElementById("p1").value;
+        if (text.length > 20 || text.length < 6) {
+            document.getElementById("pwd_warning").style.display = "";
+        }
+        else {
+            document.getElementById("pwd_warning").style.display = "None";
+        }
+    }
+
+    function pwd2Check() {
+        var pwd1 = document.getElementById("p1").value;
+        var pwd2 = document.getElementById("p2").value;
+        if (pwd1 == pwd2) {
+            document.getElementById("repwd_warning").style.display = "None";
+        }
+        else {
+            document.getElementById("repwd_warning").style.display = "";
+        }
+    }
+</script>
+<body>
+    <form action="/signup/" method="post">
+        {% csrf_token %}
+
+        <div class="top">
+            <center> 
+             <ul>
+             <li><a href="/" class = "main">Main Page</a></li>
+             <li><a href="/login" class = "user">Login</a></li>
+             <li><a href="/signup" class = "user">Sign up</a></li>
+             <li><a href="#" class = "user" style="display: None;">Username</a> </li>        
+               </ul>
+             </center>      
+        </div>
+        <img src = "{% static "/img/cmu_logo.jpeg" %}" height="100" width="150" style="padding-top: 60px;"></img>
+        <p>
+            <label>Username：<input type="text" name="uname" id="uname" onkeyup="userCheck()"></label>
+            <p id="username" style="color: red; display: none;">Length must be between 2 and  10 characters</p>
+        </p>
+
+        <p>
+            <label >Password：<input type="password" name="pwd" id="p1" onkeyup="pwdCheck()"></label>
+            <p id="pwd_warning" style="color: red; display: none;">Length must be between 6 and 20 characters</p>
+        </p>
+        <p>
+            <label >Re-enter Password：<input type="password" name="pwd2" id="p2" onkeyup="pwd2Check()"></label>
+            <p id="repwd_warning" style="color: red; display: none;">Not the same as above</p>
+        </p>
+        <p>
+            <lable><input type="submit" value="Sign up"></lable>
+        </p>
+    </form>
+</body>
+</html>
+

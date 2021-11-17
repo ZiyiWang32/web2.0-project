@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+    .postList ul {
+        list-style-type: none;
+    }
+    #divcss5{margin:0 auto;border:1px solid #000;width:300px;height:100px} 
+</style>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static '/css/navigation.css' %}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div>
+        <div class="top-input">
+            <div style="left: 40%; top: 2%; z-index: 999; position: absolute;" >
+                <form action="/search/" method="post">
+                
+                    <input type="text" name="uname"  style="height: 30px; width: 300px; border-radius:9px;">
+                    <lable><input type="submit" value="Search"></lable>
+                
+                </form>
+            </div>
+        </div>
+        <div class="top">
+            <center> 
+             <ul>
+             <li><a href="/" class = "main">Main Page</a></li>
+             <li><a href="/login" class = "user">Login</a></li>
+             <li><a href="/signup" class = "user">Sign up</a></li>
+             <li><a href="#" class = "user" style="display: None;">Username</a> </li>        
+               </ul>
+             </center>      
+     </div>
+        <div class="postList" style="padding-top: 80px;">
+            <div class="recList">
+                <p style="size: 20px;">Recommand for you</p>
+                <ul>
+                    <li>asd</li>
+                    <li>asd</li>
+                    <li>asd</li>
+                    <li>asd</li>
+                    <li>asd</li>
+                </ul>
+            </div>
+            <div class="trendNow">
+                <p style="size: 20px;">Current Trend</p>
+            <ul>
+                <li>asd</li>
+                <li>asd</li>
+                <li>asd</li>
+                <li>asd</li>
+                <li>asd</li>
+            </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+    body{ text-align:center} 
+    #divcss5{margin:0 auto;border:1px solid #000;width:300px;height:100px} 
+</style>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static '/css/navigation.css' %}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div>
+        <div class="top">
+            <center> 
+             <ul>
+             <li><a href="/" class = "main">Main Page</a></li>
+             <li><a href="/login" class = "user">Login</a></li>
+             <li><a href="/signup" class = "user">Sign up</a></li>
+             <li><a href="#" class = "user" style="display: None;">Username</a> </li>        
+               </ul>
+             </center>      
+        </div>
+        <img src = "{% static "/img/cmu_logo.jpeg" %}" height="100" width="150" style="padding-top: 60px;"></img>
+        <form action="/login/" method="post">
+            {% csrf_token %}
+            <p>
+                <label>Username：<input type="text" name="uname"></label>
+            </p>
+
+            <p>
+                <label >Password：<input type="password" name="pwd"></label>
+            </p>
+
+            <p>
+                <lable><input type="submit" value="Login"></lable>
+            </p>
+        </form>
+    </div>
+</body>
+</html>
