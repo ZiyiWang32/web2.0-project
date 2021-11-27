@@ -49,6 +49,7 @@
 
     #content_friend {
         display: none;
+
     }
 </style>
 {% load static %}
@@ -94,7 +95,7 @@
         <div class="top">
             <center>
                 <ul>
-                    <li><a href="/index" class="main">Main Page</a></li>
+                    <li><a href="/" class="main">Main Page</a></li>
                     {% if isLogin == False %}
                     <li><a href="/login" class="user">Login</a></li>
                     <li><a href="/signup" class="user">Sign up</a></li>
@@ -105,52 +106,21 @@
                 </ul>
             </center>
         </div>
-        <div class="non_top">
-            <div style="display:inline; float: left;">
-                {% if isLogin == True %}
-                <button class="btn_list" style="background-color: white;"><a href="/newpost"
-                    style="text-decoration: none; color: black;">New Post</a></button>
-                {% else %}
-                <button class="btn_list" style="background-color: white;"><a href="/login"
-                        style="text-decoration: none; color: black;">New Post</a></button>
-                {% endif %}
-            </div>
-            <div class="buttonList">
-                <button id="btn_trend" class="btn_list" onclick="clickTrend()">Current Trend</button>
-                {% if isLogin == True %}
-                <button id="btn_rec" class="btn_list" onclick="clickRec()">Recommend for you</button>
-                {% else %}
-                <button id="btn_rec" class="btn_list"><a href="/login"
-                        style="text-decoration: none; color: black;">Recommend for you</a></button>
-                {% endif %}
-            </div>
-            <div class="postList">
-                <div class="trendNow">
-                    <ul>
-                        <div class="content_topic" id="content_trend" style="width: 100%;">
-                            {% for data in trend_posts %}
-                                <div style="float: left; width: 25%; padding-left: 10px;">
-                                    <p>Owner username: {{data.owner_id}}</p>
-                                </div>
-                                <div style="float: left; padding-left: 10px; width: 70%;">
-                                    <p><a href = "/readpost?pid={{ data.post_id }}">{{data.topic_text}}</a></p>
-                                </div>
-                                <div style="float: right;">
-                                    <a>Likes: {{data.like_num}}</a>
-                                    <a>Favorites: {{data.favorite_num}}</a>
-                                    <a>Responses: {{data.response_num}}</a>
-                                </div>
-                                <hr style="width: 100%; margin-top: 100px;"></hr>
-                            {% endfor%}
-                        </div>
+        <div style="margin-top: 80px;">
+        <form action="/insertpost/" method="post">
+            {% csrf_token %}
+            <p>
+                <label>Title：<input type="text" maxlength="20" name="title" style="height: 30px; width: 300px; border-radius:9px;"></label>
+            </p>
+            <p>Content:</p>
+            <p>
+                <textarea type="text" name="content" maxlength="100" style="height: 500px; width: 500px; border-radius:9px;"></textarea>
+            </p>
 
-                        <div class="content_topic" id="content_rec">
-                            topic2
-                        </div>
-                    </ul>
-                </div>
-
-            </div>
+            <p>
+                <lable><input type="submit" value="submit"></lable>
+            </p>
+        </form>
         </div>
     </div>
 </body>

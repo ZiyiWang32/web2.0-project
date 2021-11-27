@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+    .postList ul {
+        list-style-type: none;
+    }
+
+    #divcss5 {
+        margin: 0 auto;
+        border: 1px solid #000;
+        width: 300px;
+        height: 100px
+    }
+
+    .non_top {
+        margin-top: 80px;
+    }
+
+    .buttonList {
+        text-align: center;
+    }
+
+    .btn_list {
+        cursor: pointer;
+        margin-left: 20px;
+        padding: 8px;
+        border-color: black;
+        background-color: grey;
+        color: black;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        /* future proofing */
+        -khtml-border-radius: 10px;
+        /* for old Konqueror browsers */
+        text-align: center;
+        vertical-align: middle;
+        font-weight: 900;
+        font-size: 125%
+    }
+
+    #btn_like {
+        background-color: white;
+    }
+</style>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static '/css/navigation.css' %}">
+<script type="text/javascript">
+    function clickLike() {
+        document.getElementById("btn_like").style.backgroundColor = "white";
+        document.getElementById("btn_favorite").style.backgroundColor = "grey";
+        document.getElementById("content_like").style.display = "block";
+        document.getElementById("content_favorite").style.display = "none";
+    }
+
+    function clickFavorite() {
+        document.getElementById("btn_like").style.backgroundColor = "grey";
+        document.getElementById("btn_favorite").style.backgroundColor = "white";
+        document.getElementById("content_like").style.display = "none";
+        document.getElementById("content_favorite").style.display = "block";
+    }
+
+    function changeTage() {
+        document.getElementById("old_tag").style.display = "none";
+        document.getElementById("tag_form").style.display = "block";
+    }
+</script>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+    <div class="top-input">
+        <div style="left: 40%; top: 1.5%; z-index: 999; position: absolute;">
+            <form action="/search/" method="post">
+
+                <input type="text" name="uname" style="height: 30px; width: 300px; border-radius:9px;">
+                <lable><input type="submit" value="Search"></lable>
+
+            </form>
+        </div>
+    </div>
+    <div class="top">
+        <center>
+            <ul>
+                <li><a href="/index" class="main">Main Page</a></li>
+                {% if isLogin == False %}
+                <li><a href="/login" class="user">Login</a></li>
+                <li><a href="/signup" class="user">Sign up</a></li>
+                {% else %}
+                <li><a href="/dashboard" class="user">{{username}}</a></li>
+                <li><a href="/logout" class="user">Logout</a></li>
+                {% endif %}
+            </ul>
+        </center>
+    </div>
+    <div class="non_top">
+        <div style="display:inline; float: left;">
+            <p>Your total Likes: {{like_num}}</p>
+            <p>Your total Favorites: {{favorite_num}}</p>
+        </div>
+        <div class="buttonList">
+            <button id="btn_like" class="btn_list" onclick="clickLike()">Your Likes</button>
+            {% if isLogin == True %}
+            <button id="btn_favorite" class="btn_list" onclick="clickFavorite()">Your favorites</button>
+            {% else %}
+            <button id="btn_favorite" class="btn_list"><a href="/login"
+                    style="text-decoration: none; color: black;">Recommend for you</a></button>
+            {% endif %}
+        </div>
+        <div class="postList" style="margin-top: 30px;">
+            <div class="content_topic" id="content_like">
+                {% for data in like_list %}
+                <div style="text-align: center;">
+                    <a href="/readpost?pid={{ data.post_id }}">{{data.topic_text}}</a>
+                </div>
+                <hr style="width: 100%; margin-top: 10px;">
+                </hr>
+                {% endfor%}
+            </div>
+
+            <div class="content_topic" id="content_favorite" style="display: none;">
+                {% for data in favorite_list %}
+                <div style="text-align: center;">
+                    <a href="/readpost?pid={{ data.post_id }}">{{data.topic_text}}</a>
+                        {% if data.tag == "" %}
+                        <form action="/addtag/" method="post" style="float: right;">
+                            {% csrf_token %}
+                            <a>
+                                <input type="text" name="tag" maxlength="10 " style="width: 80px;">
+                            </a>
+                            <a>
+                                <lable><input type="submit" value="submit"></lable>
+                            </a>
+                            <input type="hidden" name="pid" value={{data.post_id}} >
+                        </form>
+                        {% else %}
+                            <a id="old_tag" style="float: right; cursor: pointer;" onclick="changeTage()">{{ data.tag }}</a>
+                            <form id="tag_form" action="/addtag/" method="post" style="float: right; display: none;">
+                                {% csrf_token %}
+                                <a>
+                                    <input type="text" name="tag" maxlength="10 " style="width: 80px;" value="{{ data.tag }}"></input>
+                                </a>
+                                <a>
+                                    <lable><input type="submit" value="submit"></lable>
+                                </a>
+                                <input type="hidden" name="pid" value={{data.post_id}} >
+                            </form>
+                        {% endif %}
+                    <a style="float: right; padding-right: 10px;">tag: 
+                        
+                    </a>
+                </div>
+                <hr style="width: 100%; margin-top: 10px;">
+                </hr>
+                {% endfor%}
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

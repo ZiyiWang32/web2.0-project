@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+    .postList ul {
+        list-style-type: none;
+    }
+
+    #divcss5 {
+        margin: 0 auto;
+        border: 1px solid #000;
+        width: 300px;
+        height: 100px
+    }
+
+    .non_top {
+        margin-top: 80px;
+    }
+
+    .buttonList {
+        text-align: center;
+    }
+
+    .btn_list {
+        cursor: pointer;
+        margin-left: 20px;
+        padding: 8px;
+        border-color: black;
+        background-color: grey;
+        color: black;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        /* future proofing */
+        -khtml-border-radius: 10px;
+        /* for old Konqueror browsers */
+        text-align: center;
+        vertical-align: middle;
+        font-weight: 900;
+        font-size: 125%
+    }
+
+    #btn_trend {
+        background-color: white;
+    }
+
+    #content_rec {
+        display: none;
+    }
+
+    #content_friend {
+        display: none;
+    }
+</style>
+<script type="text/javascript">
+    function clickFavorite() {
+        if (document.getElementById("username") == null) {
+            window.location.href="/login";
+        }
+        else if(document.getElementById("hasFavorite").innerHTML != 0){
+            console.log(document.getElementById("hasFavorite").innerHTML)
+            document.getElementById("favorite_alert").style.display = "block";
+        }
+        else {
+            window.location.href="/favoritepost?pid={{post.post_id}}";
+        }
+    }
+
+    function clickLike() {
+        if (document.getElementById("username") == null) {
+            window.location.href="/login";
+        }
+        else if(document.getElementById("hasLike").innerHTML != 0){
+            document.getElementById("like_alert").style.display = "block";
+        }
+        else {
+            window.location.href="/likepost?pid={{post.post_id}}";
+        }
+    }
+
+</script>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static '/css/navigation.css' %}">
+<script type="text/javascript">
+    function clickTrend() {
+        document.getElementById("btn_trend").style.backgroundColor = "white";
+        document.getElementById("btn_rec").style.backgroundColor = "grey";
+        document.getElementById("btn_friend").style.backgroundColor = "grey";
+        document.getElementById("content_trend").style.display = "block";
+        document.getElementById("content_rec").style.display = "none";
+        document.getElementById("content_friend").style.display = "none";
+    }
+
+    function clickRec() {
+        document.getElementById("btn_trend").style.backgroundColor = "grey";
+        document.getElementById("btn_rec").style.backgroundColor = "white";
+        document.getElementById("btn_friend").style.backgroundColor = "grey";
+        document.getElementById("content_trend").style.display = "none";
+        document.getElementById("content_rec").style.display = "block";
+        document.getElementById("content_friend").style.display = "none";
+    }
+
+</script>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+    <div>
+        <div class="top-input">
+            <div style="left: 40%; top: 1.5%; z-index: 999; position: absolute;">
+                <form action="/search/" method="post">
+
+                    <input type="text" name="uname" style="height: 30px; width: 300px; border-radius:9px;">
+                    <lable><input type="submit" value="Search"></lable>
+
+                </form>
+            </div>
+        </div>
+        <div class="top">
+            <center>
+                <ul>
+                    <li><a href="/index" class="main">Main Page</a></li>
+                    {% if isLogin == False %}
+                    <li><a href="/login" class="user">Login</a></li>
+                    <li><a href="/signup" class="user">Sign up</a></li>
+                    {% else %}
+                    <li><a href="/dashboard" class="user" id="username">{{username}}</a></li>
+                    <li><a href="/logout" class="user">Logout</a></li>
+                    {% endif %}
+                </ul>
+            </center>
+        </div>
+        <div id="hasLike" style="display: none;">{{hasLike}}</div>
+        <div id="hasFavorite" style="display: none;">{{hasFavorite}}</div>
+        <div class="non_top">
+            <div style="text-align: center;">
+                <h style="font-size: 20px; font-weight: 500;">{{ post.topic_text }}</h>
+            </div>
+            <hr>
+            </hr>
+            <div class="post-content" style="width: 100%; padding-top: 10px; ">
+                <div style="float: left; width: 25%; padding-left: 10px;">
+                    <p>{{ post.owner_id }}</p>
+                    <p>Favorites: {{post.favorite_num}}
+                        <button style="margin-right: 5px; float: right;" onclick="clickFavorite()">Add to my favorite</button>
+                        <p id="favorite_alert" style="font-size: 12px; color: red; display: none;">You have already done so</p>
+                    </p>
+                    <p>Likes: {{post.like_num}}
+                        <button style="margin-right: 5px; float: right;" onclick="clickLike()">I like it</button>
+                        <p id="like_alert" style="font-size: 12px; color: red; display: none;">You have already done so</p>
+                    </p>
+                </div>
+                <div style="float: left; padding-left: 10px; width: 70%; height: 300px; border:1px solid #000; margin-bottom: 10px;">
+                    <p>{{ post.content_text }}</p>
+                </div>
+            </div>
+            <hr style="width: 100%;"></hr>
+            {% for response in responses %}
+                <div class="post-content" style="width: 100%;display: block;">
+                    <div style="float: left; width: 10%; padding-left: 10px;">
+                        <p>{{ response.owner_id }}</p>
+                    </div>
+                    <div style="float: left; width: 70%;">
+                        <p>{{ response.text }}</p>
+                    </div>
+                    <div style="float: right; width: 5%;">
+                        <p style="font-size: 12px;">
+                            {{response.create_date}}
+                        </p>
+                        
+                    </div>
+                    <hr style="width: 100%;"></hr>
+                </div>
+            {% endfor %}
+            <div class="new_response">
+                <form action="/newresponse/?pid={{post.post_id}}" method="post">
+                    {% csrf_token %}
+                    <p>Response:</p>
+                    <p>
+                        <textarea type="text" name="response" style="height: 500px; width: 500px; border-radius:9px;"></textarea>
+                    </p>
+                    {% if isLogin == True %}
+                    <p>
+                        <lable><input type="submit" value="submit"></lable>
+                    </p>
+                    {% else %}
+                    <button><a href = "/login" style="text-decoration: none; color: black;">submit</a></button>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
