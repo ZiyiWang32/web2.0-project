@@ -86,7 +86,7 @@
             <div style="left: 40%; top: 1.5%; z-index: 999; position: absolute;">
                 <form action="/search/" method="post">
 
-                    <input type="text" name="uname" style="height: 30px; width: 300px; border-radius:9px;">
+                    <input type="text" name="query" style="height: 30px; width: 300px; border-radius:9px;">
                     <lable><input type="submit" value="Search"></lable>
 
                 </form>
@@ -110,11 +110,11 @@
         <form action="/insertpost/" method="post">
             {% csrf_token %}
             <p>
-                <label>Title：<input type="text" maxlength="20" name="title" style="height: 30px; width: 300px; border-radius:9px;"></label>
+                <label>Title：<input type="text" maxlength="50" name="title" style="height: 30px; width: 300px; border-radius:9px;"></label>
             </p>
             <p>Content:</p>
             <p>
-                <textarea type="text" name="content" maxlength="100" style="height: 500px; width: 500px; border-radius:9px;"></textarea>
+                <textarea type="text" name="content" maxlength="200" style="height: 500px; width: 500px; border-radius:9px;"></textarea>
             </p>
 
             <p>

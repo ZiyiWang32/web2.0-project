@@ -60,9 +60,23 @@
         document.getElementById("content_favorite").style.display = "block";
     }
 
-    function changeTage() {
-        document.getElementById("old_tag").style.display = "none";
-        document.getElementById("tag_form").style.display = "block";
+    function changeTage(obj) {
+        obj.style.display = "none";
+        document.getElementById("tag_form_"+obj.id).style.display = "block";
+    }
+    function processQuery() {
+        var userInput = document.getElementById("search_box").value;
+        const regex = /[^A-Za-z0-9]/g;
+        var terms = userInput.split(" ")
+        for (let i = 0; i < terms.length; i++) {
+            console.log(terms[i])
+            terms[i] = terms[i].replace(regex,"")
+            var input = document.createElement("input");
+            input.value = terms[i].toLowerCase();
+            input.type = "hidden";
+            input.name = "query_term[]";
+            document.getElementById("query_form").appendChild(input);
+        }
     }
 </script>
 
@@ -72,14 +86,15 @@
 </head>
 
 <body>
-    <div class="top-input">
-        <div style="left: 40%; top: 1.5%; z-index: 999; position: absolute;">
-            <form action="/search/" method="post">
+    <div>
+        <div class="top-input">
+            <div style="left: 40%; top: 1.5%; z-index: 999; position: absolute;">
+                <form action="/search/" method="post" id="query_form">
+                    {% csrf_token %}
+                    <input type="text" name="query" id="search_box" style="height: 30px; width: 300px; border-radius:9px;">
+                    <lable><input type="submit" value="Search" onclick="processQuery()"></lable>
 
-                <input type="text" name="uname" style="height: 30px; width: 300px; border-radius:9px;">
-                <lable><input type="submit" value="Search"></lable>
-
-            </form>
+                </form>
         </div>
     </div>
     <div class="top">
@@ -109,6 +124,9 @@
             <button id="btn_favorite" class="btn_list"><a href="/login"
                     style="text-decoration: none; color: black;">Recommend for you</a></button>
             {% endif %}
+            <p style="float: right; margin-right: 10px;">Your level: {{ level }}</p>
+            <p style="float: right; margin-right: 10px;">Your Exp: {{ exp }}</p>
+
         </div>
         <div class="postList" style="margin-top: 30px;">
             <div class="content_topic" id="content_like">
@@ -137,8 +155,8 @@
                             <input type="hidden" name="pid" value={{data.post_id}} >
                         </form>
                         {% else %}
-                            <a id="old_tag" style="float: right; cursor: pointer;" onclick="changeTage()">{{ data.tag }}</a>
-                            <form id="tag_form" action="/addtag/" method="post" style="float: right; display: none;">
+                            <a id="old_tag.{{data.post_id}}" style="float: right; cursor: pointer;" onclick="changeTage(this)">{{ data.tag }}</a>
+                            <form id="tag_form_old_tag.{{data.post_id}}" action="/addtag/" method="post" style="float: right; display: none;">
                                 {% csrf_token %}
                                 <a>
                                     <input type="text" name="tag" maxlength="10 " style="width: 80px;" value="{{ data.tag }}"></input>

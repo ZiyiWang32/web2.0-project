@@ -57,21 +57,52 @@
     function clickTrend() {
         document.getElementById("btn_trend").style.backgroundColor = "white";
         document.getElementById("btn_rec").style.backgroundColor = "grey";
-        document.getElementById("btn_friend").style.backgroundColor = "grey";
         document.getElementById("content_trend").style.display = "block";
         document.getElementById("content_rec").style.display = "none";
-        document.getElementById("content_friend").style.display = "none";
     }
 
     function clickRec() {
         document.getElementById("btn_trend").style.backgroundColor = "grey";
         document.getElementById("btn_rec").style.backgroundColor = "white";
-        document.getElementById("btn_friend").style.backgroundColor = "grey";
         document.getElementById("content_trend").style.display = "none";
         document.getElementById("content_rec").style.display = "block";
-        document.getElementById("content_friend").style.display = "none";
     }
 
+    function processQuery() {
+        var userInput = document.getElementById("search_box").value;
+        const regex = /[^A-Za-z0-9]/g;
+        var terms = userInput.split(" ")
+        for (let i = 0; i < terms.length; i++) {
+            terms[i] = remove_stopwords(terms[i].replace(regex,""));
+            var input = document.createElement("input");
+            input.value = terms[i].toLowerCase();
+            input.type = "hidden";
+            input.name = "query_term[]";
+            document.getElementById("query_form").appendChild(input);
+        }
+    }
+
+    function remove_stopwords(str) {
+        // stop word list from https://stackoverflow.com/questions/5631422/stop-word-removal-in-javascript
+        var stopwords = ['i','me','my','myself','we','our','ours','ourselves','you','your','yours','yourself','yourselves','he','him','his','himself','she','her','hers','herself','it','its','itself','they','them','their','theirs','themselves','what','which','who','whom','this','that','these','those','am','is','are','was','were','be','been','being','have','has','had','having','do','does','did','doing','a','an','the','and','but','if','or','because','as','until','while','of','at','by','for','with','about','against','between','into','through','during','before','after','above','below','to','from','up','down','in','out','on','off','over','under','again','further','then',
+        'once','here','there','when','where','why','how','all','any','both','each','few','more','most','other','some',
+        'such','no','nor','not','only','own','same','so','than','too','very','s','t','can','will','just','don','should','now',
+        'i','me','my','myself','we','our','ours','ourselves','you','your','yours','yourself','yourselves','he','him','his','himself','she','her','hers',
+        'herself','it','its','itself','they','them','their','theirs','themselves','what','which','who','whom','this','that','these','those','am','is','are',
+        'was','were','be','been','being','have','has','had','having','do','does','did','doing','a','an','the','and','but','if','or','because','as','until',
+        'while','of','at','by','for','with','about','against','between','into','through','during','before','after','above','below','to','from','up','down',
+        'in','out','on','off','over','under','again','further','then','once','here','there','when','where','why','how','all','any','both','each','few','more',
+        'most','other','some','such','no','nor','not','only','own','same','so','than','too','very','s','t','can','will','just','don','should','now'];
+        res = []
+        words = str.split(' ')
+        for(i=0;i<words.length;i++) {
+        word_clean = words[i].split(".").join("");
+            if(!stopwords.includes(word_clean)) {
+                res.push(word_clean)
+            }
+        }
+    return(res.join(' '))
+}  
 </script>
 
 <head>
@@ -83,10 +114,10 @@
     <div>
         <div class="top-input">
             <div style="left: 40%; top: 1.5%; z-index: 999; position: absolute;">
-                <form action="/search/" method="post">
-
-                    <input type="text" name="uname" style="height: 30px; width: 300px; border-radius:9px;">
-                    <lable><input type="submit" value="Search"></lable>
+                <form action="/search/" method="post" id="query_form">
+                    {% csrf_token %}
+                    <input type="text" name="query" id="search_box" style="height: 30px; width: 300px; border-radius:9px;">
+                    <lable><input type="submit" value="Search" onclick="processQuery()"></lable>
 
                 </form>
             </div>
@@ -145,7 +176,20 @@
                         </div>
 
                         <div class="content_topic" id="content_rec">
-                            topic2
+                            {% for data in rec_posts %}
+                                <div style="float: left; width: 25%; padding-left: 10px;">
+                                    <p>Owner username: {{data.owner_id}}</p>
+                                </div>
+                                <div style="float: left; padding-left: 10px; width: 70%;">
+                                    <p><a href = "/readpost?pid={{ data.post_id }}">{{data.topic_text}}</a></p>
+                                </div>
+                                <div style="float: right;">
+                                    <a>Likes: {{data.like_num}}</a>
+                                    <a>Favorites: {{data.favorite_num}}</a>
+                                    <a>Responses: {{data.response_num}}</a>
+                                </div>
+                                <hr style="width: 100%; margin-top: 100px;"></hr>
+                            {% endfor%}
                         </div>
                     </ul>
                 </div>

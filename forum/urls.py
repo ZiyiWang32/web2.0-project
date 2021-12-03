@@ -16,4 +16,5 @@ urlpatterns = [
     url(r"^favoritepost/$", views.favoritePost),
     url(r"^dashboard/$", views.dashboard),
     url(r"^addtag/$", views.addTag),
+    url(r"^search/$", views.search)
 ]

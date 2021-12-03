@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+    .postList ul {
+        list-style-type: none;
+    }
+
+    #divcss5 {
+        margin: 0 auto;
+        border: 1px solid #000;
+        width: 300px;
+        height: 100px
+    }
+
+    .non_top {
+        margin-top: 80px;
+    }
+
+    .buttonList {
+        text-align: center;
+    }
+
+    .btn_list {
+        cursor: pointer;
+        margin-left: 20px;
+        padding: 8px;
+        border-color: black;
+        background-color: grey;
+        color: black;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        /* future proofing */
+        -khtml-border-radius: 10px;
+        /* for old Konqueror browsers */
+        text-align: center;
+        vertical-align: middle;
+        font-weight: 900;
+        font-size: 125%
+    }
+
+    #btn_trend {
+        background-color: white;
+    }
+
+    #content_rec {
+        display: none;
+    }
+
+    #content_friend {
+        display: none;
+    }
+</style>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static '/css/navigation.css' %}">
+
+<script type="text/javascript">
+    function processQuery() {
+        var userInput = document.getElementById("search_box").value;
+        const regex = /[^A-Za-z0-9]/g;
+        var terms = userInput.split(" ")
+        for (let i = 0; i < terms.length; i++) {
+            console.log(terms[i])
+            terms[i] = terms[i].replace(regex,"")
+            var input = document.createElement("input");
+            input.value = terms[i].toLowerCase();
+            input.type = "hidden";
+            input.name = "query_term[]";
+            document.getElementById("query_form").appendChild(input);
+        }
+    }
+</script>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+    <div>
+        <div class="top-input">
+            <div style="left: 40%; top: 1.5%; z-index: 999; position: absolute;">
+                <form action="/search/" method="post" id="query_form">
+                    {% csrf_token %}
+                    <input type="text" name="query" id="search_box" style="height: 30px; width: 300px; border-radius:9px;">
+                    <lable><input type="submit" value="Search" onclick="processQuery()"></lable>
+
+                </form>
+            </div>
+        </div>
+        <div class="top">
+            <center>
+                <ul>
+                    <li><a href="/index" class="main">Main Page</a></li>
+                    {% if isLogin == False %}
+                    <li><a href="/login" class="user">Login</a></li>
+                    <li><a href="/signup" class="user">Sign up</a></li>
+                    {% else %}
+                    <li><a href="/dashboard" class="user">{{username}}</a></li>
+                    <li><a href="/logout" class="user">Logout</a></li>
+                    {% endif %}
+                </ul>
+            </center>
+        </div>
+        <div class="non_top">
+            <div class="postList">
+                <div class="trendNow">
+                    <ul>
+                        <div class="content_topic" id="content_trend" style="width: 100%;">
+                            {% for data in search_list %}
+                                <div style="float: left; width: 25%; padding-left: 10px;">
+                                    <p>Owner username: {{data.owner_id}}</p>
+                                </div>
+                                <div style="float: left; padding-left: 10px; width: 70%;">
+                                    <p><a href = "/readpost?pid={{ data.post_id }}">{{data.topic_text}}</a></p>
+                                </div>
+                                <div style="float: right;">
+                                    <a>Likes: {{data.like_num}}</a>
+                                    <a>Favorites: {{data.favorite_num}}</a>
+                                    <a>Responses: {{data.response_num}}</a>
+                                </div>
+                                <hr style="width: 100%; margin-top: 100px;"></hr>
+                            {% endfor%}
+                        </div>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
